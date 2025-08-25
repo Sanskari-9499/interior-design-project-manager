@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management System - Interior Design Firm</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+          
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #4a5568;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .stat-card.purple {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #2d3748;
+        }
+
+        .stat-card.green {
+            background: linear-gradient(135deg, #d299c2, #fef9d7);
+            color: #2d3748;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tasks-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .tasks-header h2 {
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096, #4a5568);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .task-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .task-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-item.high-priority {
+            border-left-color: #f56565;
+        }
+
+        .task-item.medium-priority {
+            border-left-color: #ed8936;
+        }
+
+        .task-item.low-priority {
+            border-left-color: #48bb78;
+        }
+
+        .task-item.overdue {
+            border-left-color: #e53e3e;
+            background: linear-gradient(135deg, rgba(245, 101, 101, 0.05), rgba(229, 62, 62, 0.05));
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .task-project {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .task-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-not-started {
+            background: #f7fafc;
+            color: #4a5568;
+        }
+
+        .status-in-progress {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .status-completed {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-under-review {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-rework-required {
+            background: #feebc8;
+            color: #7b341e;
+        }
+
+        .status-approved {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .task-assignee {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-timing {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .task-actions .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-header h3 {
+            color: #2d3748;
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #718096;
+            padding: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .activity-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.assigned {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .activity-icon.started {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .activity-icon.completed {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+        }
+
+        .activity-icon.review {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid #48bb78;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.warning {
+            border-left-color: #ed8936;
+        }
+
+        .notification.error {
+            border-left-color: #f56565;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar, .activity-panel {
+                order: 2;
+            }
+            
+            .tasks-container {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .tasks-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .task-actions {
+                flex-wrap: wrap;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // Mock data and initial state
+        const initialUsers = [
+            { id: 1, name: 'Sanket Sharma', email: 'sanket@firm.com', role: 'Project Manager' },
+            { id: 2, name: 'Rohan Patel', email: 'rohan@firm.com', role: 'Senior Designer' },
+            { id: 3, name: 'Priya Singh', email: 'priya@firm.com', role: 'Interior Designer' },
+            { id: 4, name: 'Amit Kumar', email: 'amit@firm.com', role: 'Architect' },
+        ];
+
+        const initialProjects = [
+            { id: 1, name: 'Luxury Villa - Mumbai', code: 'LVM001', client: 'Shah Family' },
+            { id: 2, name: 'Corporate Office - Bangalore', code: 'COB002', client: 'TechCorp Ltd' },
+            { id: 3, name: 'Restaurant Interior - Delhi', code: 'RID003', client: 'Foodie Express' },
+        ];
+
+        const initialTasks = [
+            {
+                id: 1,
+                title: 'Living Room Design Concept',
+                project: 'Luxury Villa - Mumbai',
+                projectId: 1,
+                assignedBy: 1,
+                assignee: 2,
+                reviewer: 1,
+                status: 'in_progress',
+                priority: 'high',
+                tatHours: 24,
+                startTime: '2025-08-24T09:00:00',
+                endTime: null,
+                plannedEndTime: '2025-08-25T09:00:00',
+                description: 'Create initial design concepts for the main living room area',
+                stage: 1
+            },
+            {
+                id: 2,
+                title: 'Kitchen Layout Planning',
+                project: 'Luxury Villa - Mumbai',
+                projectId: 1,
+                assignedBy: 1,
+                assignee: 3,
+                reviewer: 1,
+                status: 'completed',
+                priority: 'medium',
+                tatHours: 16,
+                startTime: '2025-08-23T10:00:00',
+                endTime: '2025-08-24T14:00:00',
+                plannedEndTime: '2025-08-24T02:00:00',
+                description: 'Design kitchen layout with modern appliances',
+                stage: 2
+            },
+            {
+                id: 3,
+                title: 'Conference Room Design',
+                project: 'Corporate Office - Bangalore',
+                projectId: 2,
+                assignedBy: 1,
+                assignee: 4,
+                reviewer: 1,
+                status: 'under_review',
+                priority: 'medium',
+                tatHours: 20,
+                startTime: '2025-08-22T08:00:00',
+                endTime: '2025-08-23T16:00:00',
+                plannedEndTime: '2025-08-23T04:00:00',
+                description: 'Design modern conference room for 20 people',
+                stage: 3
+            },
+            {
+                id: 4,
+                title: 'Restaurant Lighting Plan',
+                project: 'Restaurant Interior - Delhi',
+                projectId: 3,
+                assignedBy: 1,
+                assignee: 2,
+                reviewer: 1,
+                status: 'rework_required',
+                priority: 'high',
+                tatHours: 12,
+                startTime: '2025-08-21T11:00:00',
+                endTime: '2025-08-22T20:00:00',
+                plannedEndTime: '2025-08-21T23:00:00',
+                description: 'Create atmospheric lighting design for restaurant',
+                stage: 2
+            }
+        ];
+
+        const initialActivity = [
+            {
+                id: 1,
+                type: 'assigned',
+                user: 'Sanket Sharma',
+                task: 'Living Room Design Concept',
+                message: 'assigned task to Rohan Patel',
+                timestamp: '2025-08-24T09:00:00'
+            },
+            {
+                id: 2,
+                type: 'started',
+                user: 'Rohan Patel',
+                task: 'Living Room Design Concept',
+                message: 'started working on task',
+                timestamp: '2025-08-24T09:15:00'
+            },
+            {
+                id: 3,
+                type: 'completed',
+                user: 'Priya Singh',
+                task: 'Kitchen Layout Planning',
+                message: 'completed task and submitted for review',
+                timestamp: '2025-08-24T14:00:00'
+            },
+            {
+                id: 4,
+                type: 'review',
+                user: 'Sanket Sharma',
+                task: 'Restaurant Lighting Plan',
+                message: 'requested rework - needs more ambient options',
+                timestamp: '2025-08-23T10:30:00'
+            }
+        ];
+
+        function ProjectManagementApp() {
+            const [currentUser] = useState(initialUsers[0]); // Logged in as Sanket
+            const [tasks, setTasks] = useState(initialTasks);
+            const [users] = useState(initialUsers);
+            const [projects] = useState(initialProjects);
+            const [activity, setActivity] = useState(initialActivity);
+            const [filter, setFilter] = useState('all');
+            const [showModal, setShowModal] = useState(false);
+            const [modalType, setModalType] = useState('');
+            const [selectedTask, setSelectedTask] = useState(null);
+            const [notification, setNotification] = useState(null);
+
+            const [newTask, setNewTask] = useState({
+                title: '',
+                description: '',
+                projectId: '',
+                assignee: '',
+                reviewer: '',
+                priority: 'medium',
+                tatHours: 8
+            });
+
+            const showNotification = useCallback((message, type = 'success') => {
+                setNotification({ message, type });
+                setTimeout(() => setNotification(null), 3000);
+            }, []);
+
+            const addActivity = useCallback((type, task, message) => {
+                const newActivity = {
+                    id: Date.now(),
+                    type,
+                    user: currentUser.name,
+                    task: task.title,
+                    message,
+                    timestamp: new Date().toISOString()
+                };
+                setActivity(prev => [newActivity, ...prev.slice(0, 9)]);
+            }, [currentUser]);
+
+            const filteredTasks = tasks.filter(task => {
+                if (filter === 'all') return true;
+                if (filter === 'my-tasks') return task.assignee === currentUser.id;
+                if (filter === 'review') return task.status === 'under_review' && task.reviewer === currentUser.id;
+                if (filter === 'overdue') return isOverdue(task);
+                if (filter === 'high-priority') return task.priority === 'high';
+                return task.status === filter;
+            });
+
+            const stats = {
+                total: tasks.length,
+                inProgress: tasks.filter(t => t.status === 'in_progress').length,
+                review: tasks.filter(t => t.status === 'under_review').length,
+                overdue: tasks.filter(t => isOverdue(t)).length
+            };
+
+            function isOverdue(task) {
+                if (task.status === 'approved' || task.status === 'rejected') return false;
+                const now = new Date();
+                const planned = new Date(task.plannedEndTime);
+                return now > planned;
+            }
+
+            function getStatusClass(status) {
+                return `status-${status.replace('_', '-')}`;
+            }
+
+            function formatTime(timestamp) {
+                if (!timestamp) return 'Not set';
+                return new Date(timestamp).toLocaleString();
+            }
+
+            function formatRelativeTime(timestamp) {
+                const now = new Date();
+                const time = new Date(timestamp);
+                const diff = now - time;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const days = Math.floor(hours / 24);
+                
+                if (days > 0) return `${days}d ago`;
+                if (hours > 0) return `${hours}h ago`;
+                return 'Just now';
+            }
+
+            function getUserName(userId) {
+                const user = users.find(u => u.id === userId);
+                return user ? user.name : 'Unknown';
+            }
+
+            function getProjectName(projectId) {
+                const project = projects.find(p => p.id === projectId);
+                return project ? project.name : 'Unknown Project';
+            }
+
+            function handleStartTask(taskId) {
+                setTasks(prev => prev.map(task => {
+                    if (task.id === taskId && task.assignee === currentUser.id) {
+                        const updatedTask = {
+                            ...task,
+                            status: 'in_progress',
+                            startTime: new Date().toISOString()
+                        };
+                        addActivity('started', updatedTask, 'started working on task');
+                        return updatedTask;
+                    }
+                    return task;
+                }));
+                showNotification('Task started successfully!');
+            }
+
+            function handleCompleteTask(taskId) {
+                setTasks(prev => prev.map(task => {
+                    if (task.id === taskId && task.assignee === currentUser.id) {
+                        const updatedTask = {
+                            ...task,
+                            status: 'completed',
+                            endTime: new Date().toISOString(),
+                            stage: 3
+                        };
+                        addActivity('completed', updatedTask, 'completed task and submitted for review');
+                        
+                        // Auto-assign to reviewer
+                        setTimeout(() => {
+                            setTasks(prev => prev.map(t => 
+                                t.id === taskId ? { ...t, status: 'under_review' } : t
+                            ));
+                        }, 1000);
+                        
+                        return updatedTask;
+                    }
+                    return task;
+                }));
+                showNotification('Task completed and sent for review!');
+            }
+
+            function handleReviewAction(taskId, action, remarks = '') {
+                setTasks(prev => prev.map(task => {
+                    if (task.id === taskId && task.reviewer === currentUser.id) {
+                        let newStatus = task.status;
+                        let message = '';
+                        
+                        if (action === 'approve') {
+                            newStatus = 'approved';
+                            message = 'approved task';
+                        } else if (action === 'rework') {
+                            newStatus = 'rework_required';
+                            message = `requested rework${remarks ? ` - ${remarks}` : ''}`;
+                        } else if (action === 'reject') {
+                            newStatus = 'rejected';
+                            message = `rejected task${remarks ? ` - ${remarks}` : ''}`;
+                        }
+                        
+                        const updatedTask = { ...task, status: newStatus };
+                        addActivity('review', updatedTask, message);
+                        
+                        return updatedTask;
+                    }
+                    return task;
+                }));
+                
+                setShowModal(false);
+                showNotification(`Task ${action}${action === 'rework' ? ' sent for rework' : 'd'} successfully!`);
+            }
+
+            function handleCreateTask() {
+                if (!newTask.title || !newTask.projectId || !newTask.assignee) {
+                    showNotification('Please fill all required fields', 'error');
+                    return;
+                }
+
+                const task = {
+                    id: Date.now(),
+                    ...newTask,
+                    projectId: parseInt(newTask.projectId),
+                    assignee: parseInt(newTask.assignee),
+                    reviewer: parseInt(newTask.reviewer) || currentUser.id,
+                    assignedBy: currentUser.id,
+                    status: 'not_started',
+                    startTime: null,
+                    endTime: null,
+                    plannedEndTime: null,
+                    project: getProjectName(parseInt(newTask.projectId)),
+                    stage: 1
+                };
+
+                setTasks(prev => [...prev, task]);
+                addActivity('assigned', task, `assigned task to ${getUserName(task.assignee)}`);
+                
+                setNewTask({
+                    title: '',
+                    description: '',
+                    projectId: '',
+                    assignee: '',
+                    reviewer: '',
+                    priority: 'medium',
+                    tatHours: 8
+                });
+                
+                setShowModal(false);
+                showNotification('Task created and assigned successfully!');
+            }
+
+            function openModal(type, task = null) {
+                setModalType(type);
+                setSelectedTask(task);
+                setShowModal(true);
+            }
+
+            return (
+                <div className="app-container">
+                    {notification && (
+                        <div className={`notification ${notification.type}`}>
+                            {notification.message}
+                        </div>
+                    )}
+
+                    <header className="header">
+                        <div className="logo">
+                            <i className="fas fa-home"></i>
+                            <h1>Design Project Manager</h1>
+                        </div>
+                        <div className="user-info">
+                            <i className="fas fa-user-circle"></i>
+                            <span>{currentUser.name}</span>
+                            <span>|</span>
+                            <span>{currentUser.role}</span>
+                        </div>
+                    </header>
+
+                    <div className="main-content">
+                        <aside className="sidebar">
+                            <h3><i className="fas fa-chart-bar"></i> Dashboard</h3>
+                            <div className="stats-grid">
+                                <div className="stat-card">
+                                    <div className="stat-value">{stats.total}</div>
+                                    <div className="stat-label">Total Tasks</div>
+                                </div>
+                                <div className="stat-card blue">
+                                    <div className="stat-value">{stats.inProgress}</div>
+                                    <div className="stat-label">In Progress</div>
+                                </div>
+                                <div className="stat-card purple">
+                                    <div className="stat-value">{stats.review}</div>
+                                    <div className="stat-label">Under Review</div>
+                                </div>
+                                <div className="stat-card green">
+                                    <div className="stat-value">{stats.overdue}</div>
+                                    <div className="stat-label">Overdue</div>
+                                </div>
+                            </div>
+
+                            <h3><i className="fas fa-filter"></i
